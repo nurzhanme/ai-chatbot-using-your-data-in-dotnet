@@ -48,7 +48,7 @@ public class VectorSearchServiceWithHyde(
         // 2) Embed the HYDE hypothesis text
         var embs = await embeddingGenerator.GenerateAsync(
             new[] { textToEmbed },
-            new EmbeddingGenerationOptions { Dimensions = 512 }
+            new EmbeddingGenerationOptions { Dimensions = Utils.VECTOR_DIMENSIONS }
         );
 
         // 3) Use the single embedding as the search vector

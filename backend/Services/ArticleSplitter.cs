@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Microsoft.SemanticKernel.Text;
 using ChatBot.Models;
@@ -54,6 +55,7 @@ public class ArticleSplitter(int MaxTokensPerChunk = 300, int OverlapTokens = 60
         return lines;
     }
 
+    [Experimental("SKEXP0050")]
     public IEnumerable<DocumentChunk> Chunk(string title, string content, string pageUrl = "", string section = "")
     {
         // Prepare lines for TextChunker (short-ish lines work best).

@@ -52,7 +52,7 @@ public partial class WikipediaClient
 
     static string CreateWikipediaUrl(string pageTitle, bool full)
     {
-        var ub = new UriBuilder("https://en.wikipedia.org/w/api.php");
+        var ub = new UriBuilder("https://ru.wikipedia.org/w/api.php");
         var qs = new Dictionary<string, string>
         {
             ["action"] = "query",

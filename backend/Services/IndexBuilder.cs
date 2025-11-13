@@ -1,6 +1,7 @@
 using Pinecone;
 using Microsoft.Extensions.AI;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ChatBot.Services;
 
@@ -11,6 +12,7 @@ public class IndexBuilder(
     DocumentChunkStore chunkStore,
     ArticleSplitter splitter)
 {
+    [Experimental("SKEXP0050")]
     public async Task BuildIndex(string[] pageTitles)
     {
         foreach (var title in pageTitles)
@@ -29,7 +31,7 @@ public class IndexBuilder(
             // Makes a call to OpenAI to create an embedding from these strings
             var embeddings = await embeddingGenerator.GenerateAsync(
                 stringsToEmbed,
-                new EmbeddingGenerationOptions { Dimensions = 512 }
+                new EmbeddingGenerationOptions { Dimensions = Utils.VECTOR_DIMENSIONS }
             );
 
             var vectors = chunks.Select((chunk, index) => new Vector

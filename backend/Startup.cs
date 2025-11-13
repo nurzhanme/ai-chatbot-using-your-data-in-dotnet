@@ -1,10 +1,12 @@
 using System;
+using System.ClientModel;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using Pinecone;
 using ChatBot.Services;
+using OpenAI;
 
 namespace ChatBot;
 
@@ -26,11 +28,15 @@ static class Startup
         });
 
         builder.Services.AddSingleton<StringEmbeddingGenerator>(s => new OpenAI.Embeddings.EmbeddingClient(
-                model: "text-embedding-3-small",
-                apiKey: openAiKey
+                model: "gemini-embedding-001",
+                credential: new ApiKeyCredential(openAiKey),
+                options: new OpenAIClientOptions
+                {
+                    Endpoint = new Uri("https://generativelanguage.googleapis.com/v1beta/openai/")
+                }
             ).AsIEmbeddingGenerator());
 
-        builder.Services.AddSingleton<IndexClient>(s => new PineconeClient(pineconeKey).Index("landmark-chunks"));
+        builder.Services.AddSingleton<IndexClient>(s => new PineconeClient(pineconeKey).Index("tours-chunks"));
 
         builder.Services.AddSingleton<DocumentChunkStore>(s => new DocumentChunkStore());
 
@@ -45,8 +51,12 @@ static class Startup
          {
              var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
              var client = new OpenAI.Chat.ChatClient(
-                  "gpt-5-mini",
-                  openAiKey).AsIChatClient();
+                  "gemini-2.5-flash",
+                  credential: new ApiKeyCredential(openAiKey),
+                  options: new OpenAIClientOptions
+                  {
+                      Endpoint = new Uri("https://generativelanguage.googleapis.com/v1beta/openai/")
+                  }).AsIChatClient();
 
              return new ChatClientBuilder(client)
                  .UseLogging(loggerFactory)
