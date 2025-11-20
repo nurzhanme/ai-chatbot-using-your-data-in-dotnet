@@ -34,11 +34,6 @@ static class Startup
         //         apiKey: openAiKey
         //     ).AsIEmbeddingGenerator());
         //
-        // builder.Services.AddGoogleAIEmbeddingGeneration(
-        //     modelId: "gemini-embedding-001",       // Name of the embedding model, e.g. "models/text-embedding-004".
-        //     apiKey: geminiAiKey
-        // );
-        
         builder.Services.AddGoogleAIEmbeddingGenerator(
             modelId: "gemini-embedding-001",       // Name of the embedding model, e.g. "models/text-embedding-004".
             apiKey: geminiAiKey

@@ -4,7 +4,7 @@ namespace ChatBot;
 
 public static class Utils
 {
-    public const int VECTOR_DIMENSIONS = 768;
+    public const int VECTOR_DIMENSIONS = 3072;
     
     public static string RequireEnv(this WebApplicationBuilder builder, string key)
     {

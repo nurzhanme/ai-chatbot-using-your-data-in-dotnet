@@ -2,8 +2,6 @@ using Pinecone;
 using Microsoft.Extensions.AI;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Embeddings;
 
 namespace ChatBot.Services;
 
@@ -12,7 +10,6 @@ public class IndexBuilder(
     IndexClient pineconeIndex,
     WikipediaClient wikipediaClient,
     DocumentChunkStore chunkStore,
-    ITextEmbeddingGenerationService textEmbeddingGenerationService,
     ArticleSplitter splitter)
 {
     [Experimental("SKEXP0050")]
@@ -31,20 +28,16 @@ public class IndexBuilder(
 
             var stringsToEmbed = chunks.Select(c => $"{c.Title} > {c.Section}\n\n{c.Content}");
 
-            //var emb = kernel.
-            
-            // Makes a call to OpenAI to create an embedding from these strings
-            // var embeddings = await embeddingGenerator.GenerateAsync(
-            //     stringsToEmbed,
-            //     new EmbeddingGenerationOptions { Dimensions = Utils.VECTOR_DIMENSIONS }
-            // );
-
-            var embs = await textEmbeddingGenerationService.GenerateEmbeddingsAsync(stringsToEmbed.ToList());
+            // Makes a call to Google Gemini to create an embedding from these strings
+            var embeddings = await embeddingGenerator.GenerateAsync(
+                stringsToEmbed,
+                new EmbeddingGenerationOptions { Dimensions = Utils.VECTOR_DIMENSIONS }
+            );
 
             var vectors = chunks.Select((chunk, index) => new Vector
             {
                 Id = chunk.Id,
-                Values = embs[index],
+                Values = embeddings[index].Vector.ToArray(),
                 Metadata = new Metadata
                 {
                     { "title", chunk.Title },
