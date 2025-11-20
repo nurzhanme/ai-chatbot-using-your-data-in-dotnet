@@ -70,9 +70,12 @@ public class ArticleSplitter(int MaxTokensPerChunk = 300, int OverlapTokens = 60
             tokenCounter: EstimateTokens
         );
 
+        var titleEn = Utils.LatinizeText(title);
+
         return chunkBodies.Select((chunkContent, index) => new DocumentChunk(
-            Id: Utils.ToUrlSafeId($"{title}_{section}_{index + 1:D2}"),
+            Id: Utils.ToUrlSafeId($"{titleEn}_{Utils.LatinizeText(section)}_{index + 1:D2}"),
             Title: title,
+            TitleEn: titleEn,
             Section: section,
             ChunkIndex: index + 1,
             Content: chunkContent.Trim(),

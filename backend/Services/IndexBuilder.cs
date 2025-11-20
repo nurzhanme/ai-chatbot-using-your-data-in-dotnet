@@ -54,11 +54,12 @@ public class IndexBuilder(
             foreach (var chunk in chunks)
             {
                 chunkStore.SaveDocumentChunk(chunk);
+                await Task.Delay(500);
             }
 
             // If you have rate limit issues with Pinecone (may happen based on your plan) then uncomment this Task.Delay()
             // see https://docs.pinecone.io/reference/api/database-limits#rate-limits
-            // await Task.Delay(500);
+            await Task.Delay(500);
         }
     }
 }

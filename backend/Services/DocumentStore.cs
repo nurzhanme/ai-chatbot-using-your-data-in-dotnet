@@ -19,6 +19,7 @@ public class DocumentStore
     CREATE TABLE IF NOT EXISTS Documents(
       Id TEXT PRIMARY KEY,
       Title TEXT,
+      TitleEn TEXT,
       Content TEXT,
       PageUrl TEXT
     );
@@ -51,7 +52,7 @@ public class DocumentStore
             " END";
 
         cmd.CommandText = $@"
-SELECT Id, Title, Content, PageUrl
+SELECT Id, Title, TitleEn, Content, PageUrl
 FROM Documents
 WHERE Id IN ({string.Join(", ", paramNames)})
 ORDER BY {orderByCase};";
@@ -63,8 +64,9 @@ ORDER BY {orderByCase};";
             results.Add(new Document(
                 Id: reader.GetString(0),
                 Title: reader.GetString(1),
-                Content: reader.GetString(2),
-                PageUrl: reader.GetString(3)
+                TitleEn: reader.GetString(2),
+                Content: reader.GetString(3),
+                PageUrl: reader.GetString(4)
             ));
         }
 
@@ -78,10 +80,11 @@ ORDER BY {orderByCase};";
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
 INSERT OR REPLACE INTO Documents
-(Id, Title, Content, PageUrl)
-VALUES ($id, $title, $content, $pageUrl);";
+(Id, Title, TitleEn, Content, PageUrl)
+VALUES ($id, $title, $titleEn, $content, $pageUrl);";
         cmd.Parameters.AddWithValue("$id", document.Id);
         cmd.Parameters.AddWithValue("$title", document.Title);
+        cmd.Parameters.AddWithValue("$titleEn", document.TitleEn);
         cmd.Parameters.AddWithValue("$content", document.Content);
         cmd.Parameters.AddWithValue("$pageUrl", document.PageUrl);
         cmd.ExecuteNonQuery();

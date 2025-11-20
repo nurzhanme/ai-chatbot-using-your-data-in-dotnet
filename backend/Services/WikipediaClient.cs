@@ -96,11 +96,13 @@ public partial class WikipediaClient
         var content = firstPage.Extract!.Trim();
 
         var id = Utils.ToUrlSafeId(title);
+        var titleEn = Utils.LatinizeText(title);
         var pageUrl = $"https://en.wikipedia.org/wiki/{Uri.EscapeDataString(title.Replace(' ', '_'))}";
 
         return new Document(
             Id: id,
             Title: title,
+            TitleEn: titleEn,
             Content: content,
             PageUrl: pageUrl
         );

@@ -19,6 +19,7 @@ public class DocumentChunkStore
     CREATE TABLE IF NOT EXISTS Chunks(
       Id TEXT PRIMARY KEY,
       Title TEXT,
+      TitleEn TEXT,
       Section TEXT,
       ChunkIndex INTEGER,
       Content TEXT,
@@ -52,7 +53,7 @@ public class DocumentChunkStore
             " END";
 
         cmd.CommandText = $@"
-SELECT Id, Title, Section, ChunkIndex, Content, SourcePageUrl
+SELECT Id, Title, TitleEn, Section, ChunkIndex, Content, SourcePageUrl
 FROM Chunks
 WHERE Id IN ({string.Join(", ", paramNames)})
 ORDER BY {orderByCase};";
@@ -64,10 +65,11 @@ ORDER BY {orderByCase};";
             results.Add(new DocumentChunk(
                 Id: reader.GetString(0),
                 Title: reader.GetString(1),
-                Section: reader.GetString(2),
-                ChunkIndex: reader.GetInt32(3),
-                Content: reader.GetString(4),
-                SourcePageUrl: reader.GetString(5)
+                TitleEn: reader.GetString(2),
+                Section: reader.GetString(3),
+                ChunkIndex: reader.GetInt32(4),
+                Content: reader.GetString(5),
+                SourcePageUrl: reader.GetString(6)
             ));
         }
 
@@ -81,10 +83,11 @@ ORDER BY {orderByCase};";
         using var cmd = conn.CreateCommand();
         cmd.CommandText = @"
 INSERT OR REPLACE INTO Chunks
-(Id, Title, Section, ChunkIndex, Content, SourcePageUrl)
-VALUES ($id, $title, $section, $chunkIndex, $content, $sourcePageUrl);";
+(Id, Title, TitleEn, Section, ChunkIndex, Content, SourcePageUrl)
+VALUES ($id, $title, $titleEn, $section, $chunkIndex, $content, $sourcePageUrl);";
         cmd.Parameters.AddWithValue("$id", chunk.Id);
         cmd.Parameters.AddWithValue("$title", chunk.Title);
+        cmd.Parameters.AddWithValue("$titleEn", chunk.TitleEn);
         cmd.Parameters.AddWithValue("$section", chunk.Section);
         cmd.Parameters.AddWithValue("$chunkIndex", chunk.ChunkIndex);
         cmd.Parameters.AddWithValue("$content", chunk.Content);

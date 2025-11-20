@@ -9,19 +9,19 @@ var app = builder.Build();
 app.UseCors("FrontendCors");
 
 // Uncomment to do indexing when you run the project (you only need to do this once)...
-try
-{
-    #pragma warning disable SKEXP0050
-    var indexer = app.Services.GetRequiredService<IndexBuilder>();
-    await indexer.BuildIndex(SourceData.LandmarkNames);
-    #pragma warning restore SKEXP0050
-
-}
-catch (Exception e)
-{
-    Console.WriteLine(e);
-    throw;
-}
+// try
+// {
+//     #pragma warning disable SKEXP0050
+//     var indexer = app.Services.GetRequiredService<IndexBuilder>();
+//     await indexer.BuildIndex(SourceData.LandmarkNames);
+//     #pragma warning restore SKEXP0050
+//
+// }
+// catch (Exception e)
+// {
+//     Console.WriteLine(e);
+//     throw;
+// }
 
 // GET /search?query=...
 app.MapGet("/search", async (string query, VectorSearchService search) =>
