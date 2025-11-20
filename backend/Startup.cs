@@ -1,13 +1,9 @@
-using System;
+using System.ClientModel;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
 using Pinecone;
 using ChatBot.Services;
-using Google.GenAI;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.Google;
+using OpenAI;
 
 namespace ChatBot;
 
@@ -58,8 +54,9 @@ static class Startup
          {
              var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
              var client = new OpenAI.Chat.ChatClient(
-                  "gpt-5-mini",
-                  openAiKey).AsIChatClient();
+                 "gemini-2.5-flash",
+                 new ApiKeyCredential(geminiAiKey),
+                 new OpenAIClientOptions{ Endpoint = new Uri("https://generativelanguage.googleapis.com/v1beta/openai/")} ).AsIChatClient();
 
              return new ChatClientBuilder(client)
                  .UseLogging(loggerFactory)
